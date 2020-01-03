@@ -14,7 +14,6 @@ type AccessToken struct {
 	ClientId    int64  `json:"client_id"`
 	Expires     int64  `json:"expires"`
 }
-
 //Web frontend - Client-Id: 123
 //Android APP - Client-Id: 234
 
