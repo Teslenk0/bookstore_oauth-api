@@ -1,7 +1,9 @@
 package http
 
 import (
+	"github.com/Teslenk0/bookstore_oauth-api/src/domain/access_token"
 	"github.com/Teslenk0/bookstore_oauth-api/src/services"
+	"github.com/Teslenk0/bookstore_oauth-api/src/utils/errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -9,6 +11,8 @@ import (
 
 type AccessTokenHandler interface {
 	GetById(c *gin.Context)
+	Create(c *gin.Context)
+	UpdateExpirationTime(c *gin.Context)
 }
 
 type accessTokenHandler struct {
@@ -20,11 +24,30 @@ func NewHandler(s services.Service) AccessTokenHandler {
 }
 
 func (handler *accessTokenHandler) GetById(c *gin.Context) {
-	access_tokenId := strings.TrimSpace(c.Param("access_token_id"))
-	accessToken, err := handler.service.GetById(access_tokenId)
-	if err != nil{
+	accessTokenId := strings.TrimSpace(c.Param("access_token_id"))
+	accessToken, err := handler.service.GetById(accessTokenId)
+	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
 	c.JSON(http.StatusOK, accessToken)
+}
+
+func (handler *accessTokenHandler) Create(c *gin.Context) {
+	var token access_token.AccessToken
+	if err := c.ShouldBindJSON(&token); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
+	}
+
+	if err := handler.service.Create(token); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusCreated, token)
+}
+
+func (handler *accessTokenHandler) UpdateExpirationTime(c *gin.Context) {
+	c.JSON(http.StatusNotImplemented, "TODO")
 }

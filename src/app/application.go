@@ -11,12 +11,11 @@ var (
 	router = gin.Default()
 )
 
-func StartApplication(){
-
-
+func StartApplication() {
 
 	atHandler := http.NewHandler(services.NewService(db.NewRepository()))
 
-	router.GET("/oauth/access_token/:access_token_id", atHandler.GetById)
+	mapUrl(router, atHandler)
+
 	_ = router.Run(":8080")
 }

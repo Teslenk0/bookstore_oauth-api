@@ -34,8 +34,6 @@ func (r *dbRepository) GetById(id string) (*access_token.AccessToken, *errors.Re
 		return nil, errors.NewInternalServerError("internal server error: session has been closed")
 	}
 
-	defer session.Close()
-
 	var result access_token.AccessToken
 
 	if err := session.Query(queryGetAccessToken, id).Scan(&result.AccessToken, &result.UserId, &result.ClientId, &result.Expires); err != nil {
@@ -56,8 +54,6 @@ func (r *dbRepository) Create(token access_token.AccessToken) *errors.RestError 
 		return errors.NewInternalServerError("internal server error: session has been closed")
 	}
 
-	defer session.Close()
-
 	if err := session.Query(queryCreateAccessToken,
 		token.AccessToken,
 		token.UserId,
@@ -74,8 +70,6 @@ func (r *dbRepository) UpdateExpirationTime(token access_token.AccessToken) *err
 	if session.Closed() {
 		return errors.NewInternalServerError("internal server error: session has been closed")
 	}
-
-	defer session.Close()
 
 	if err := session.Query(queryUpdateExpiresAccessToken,
 		token.Expires,
