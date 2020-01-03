@@ -1,6 +1,8 @@
 package access_token
 
 import (
+	"github.com/Teslenk0/bookstore_oauth-api/src/utils/errors"
+	"strings"
 	"time"
 )
 
@@ -16,6 +18,28 @@ type AccessToken struct {
 }
 //Web frontend - Client-Id: 123
 //Android APP - Client-Id: 234
+
+
+func (at *AccessToken) Validate() *errors.RestError{
+	accessTokenId := strings.TrimSpace(at.AccessToken)
+	if accessTokenId == "" {
+		return errors.NewBadRequestError("invalid access token id")
+	}
+	if at.UserId <= 0 {
+		return errors.NewBadRequestError("invalid access token user id")
+	}
+
+	if at.ClientId <= 0 {
+		return errors.NewBadRequestError("invalid access token client id")
+	}
+
+	if at.Expires <= 0 {
+		return errors.NewBadRequestError("invalid access token expiration time")
+	}
+
+
+	return nil
+}
 
 func GetNewAccessToken() AccessToken {
 	return AccessToken{
