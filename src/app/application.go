@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/Teslenk0/bookstore_oauth-api/src/http"
 	"github.com/Teslenk0/bookstore_oauth-api/src/repository/db"
+	"github.com/Teslenk0/bookstore_oauth-api/src/repository/rest"
 	"github.com/Teslenk0/bookstore_oauth-api/src/services"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ var (
 
 func StartApplication() {
 
-	atHandler := http.NewHandler(services.NewService(db.NewRepository()))
+	atHandler := http.NewAccessTokenHandler(access_token.NewService(rest.NewRestUsersRepository(), db.NewRepository()))
 
 	mapUrl(router, atHandler)
 
